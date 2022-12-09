@@ -2,16 +2,16 @@ class BudgetItemsController < ApplicationController
   before_action :set_budget_item, only: %i[ show update destroy ]
 
   # GET /budget_items
-  def index
-    @budget_items = BudgetItem.all
+  # def index
+  #   @budget_items = BudgetItem.all
 
-    render json: @budget_items
-  end
+  #   render json: @budget_items
+  # end
 
   # GET /budget_items/1
-  def show
-    render json: @budget_item
-  end
+  # def show
+  #   render json: @budget_item
+  # end
 
   # POST /budget_items
   def create
