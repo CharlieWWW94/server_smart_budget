@@ -1,4 +1,4 @@
-![Smart Logo] (https://github.com/CharlieWWW94/server_smart_budget/blob/main/smart_logo.png)
+![Smart Logo](https://github.com/CharlieWWW94/server_smart_budget/blob/main/smart_logo.png?raw=true)
 
 # Setting up The Smart Server.
 
