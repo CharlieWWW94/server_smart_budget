@@ -1,24 +1,22 @@
-# README
+![Smart Logo] (smart_logo.png)
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+# Setting up The Smart Server.
 
-Things you may want to cover:
+This repo contains the main Rails server for the Smart budgeting application. This was created as the final project for the Multiverse Software Engineering Bootcamp.
 
-* Ruby version
+Please follow the below instructions to get set up.
 
-* System dependencies
+# Requirements
 
-* Configuration
+Please ensure you have the following installed on your system:
 
-* Database creation
+- Ruby 3.1.3
+- Rails 7.0.4
 
-* Database initialization
+# After cloning
 
-* How to run the test suite
+Ensure that you cd into the directory named "smart_budget" and run "bundle". This will install the necessary packages contained in the gem file.
 
-* Services (job queues, cache servers, search engines, etc.)
+Following this, run "rails s" to start the server.
 
-* Deployment instructions
-
-* ...
+Happy developing!
