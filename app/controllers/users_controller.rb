@@ -2,15 +2,29 @@ class UsersController < ApplicationController
   before_action :set_user, only: %i[ show update destroy ]
 
   # GET /users
-  def index
-    @users = User.all
+  # NEVER needed.
+  # def index
+  #   @users = User.all
 
-    render json: @users
-  end
+  #   render json: @users
+  # end
 
   # GET /users/1
-  def show
-    render json: @user
+  # def show
+  #   render json: @user
+  # end
+
+  #POST /users/login
+  def login
+    @user = User.find_by(username: user_params[:username])
+    puts @user
+
+    if @user
+      session[:user_id] = @user.id
+      render json: @user, status: :ok
+    else
+      render json: @user.errors, status: :unauthorized
+    end
   end
 
   # POST /users
@@ -18,6 +32,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
+      session[:user_id] = @user.id
       render json: @user, status: :created, location: @user
     else
       render json: @user.errors, status: :unprocessable_entity
@@ -46,6 +61,6 @@ class UsersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def user_params
-      params.require(:user).permit(:username, :email, :mobile, :pw_hash, :city, :county, :country)
+      params.permit(:id, :username, :email, :mobile, :pw_hash, :city, :county, :country)
     end
 end
