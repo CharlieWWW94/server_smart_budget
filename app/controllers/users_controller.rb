@@ -18,11 +18,11 @@ class UsersController < ApplicationController
   def login
     set_user
     
-    if @user
+    if @user.pw_hash == params[:pw_hash]
       session[:user_id] = @user.id
       render json: @user, status: :ok
     else
-      render json: @user.errors, status: :unauthorized
+      render json: {error: "Login information incorrect."}, status: :unauthorized
     end
   end
 
@@ -55,7 +55,7 @@ class UsersController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
-      @user = User.find(params[:id])
+      @user = User.find_by(username: params[:username])
     end
 
     # Only allow a list of trusted parameters through.

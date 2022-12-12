@@ -1,11 +1,16 @@
 Rails.application.routes.draw do
-  resources :var_budget_items
-  resources :budget_items
-  resources :incomes
-  resources :budgets
-  resources :users
+  
+  
+  resources :users, only: [:create, :update, :destroy]
+    post "/users/login", to: "users#login"
+
+  resources :incomes, only: [:create, :update, :destroy]
+  resources :budgets, only: [:show, :create, :update, :destroy] do
+    resources :var_budget_items, only: [:create, :update, :destroy]
+    resources :budget_items, only: [:create, :update, :destroy]
+  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-  post "/users/login", to: "users#login"
+  
   # Defines the root path route ("/")
   # root "articles#index"
 end
