@@ -15,12 +15,15 @@ class IncomesController < ApplicationController
 
   # POST /incomes
   def create
-    @income = Income.new(income_params)
-
-    if @income.save
-      render json: @income, status: :created, location: @income
+    if !session[:user_id]
+      render json: {error: "Please login before adding income"}, status: :unauthorized
     else
-      render json: @income.errors, status: :unprocessable_entity
+      @income = Income.new(income_params.merge({user_id: session[:user_id]}))
+      if @income.save
+        render json: @income, status: :created, location: @income
+      else
+        render json: @income.errors, status: :unprocessable_entity
+      end
     end
   end
 
@@ -46,6 +49,6 @@ class IncomesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def income_params
-      params.require(:income).permit(:type, :annual, :month, :week)
+      params.permit(:income_type, :annual, :month, :week, :user_id)
     end
 end

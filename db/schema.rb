@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_09_142134) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_12_111124) do
   create_table "budget_items", force: :cascade do |t|
     t.string "name"
     t.float "value"
@@ -29,13 +29,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_09_142134) do
   end
 
   create_table "incomes", force: :cascade do |t|
-    t.string "type"
     t.float "annual"
     t.float "month"
     t.float "week"
     t.integer "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "income_type"
     t.index ["user_id"], name: "index_incomes_on_user_id"
   end
 

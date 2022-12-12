@@ -1,7 +1,7 @@
 class CreateIncomes < ActiveRecord::Migration[7.0]
   def change
     create_table :incomes do |t|
-      t.string :type
+      t.string :income_type
       t.float :annual
       t.float :month
       t.float :week
