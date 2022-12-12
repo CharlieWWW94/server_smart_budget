@@ -1,4 +1,5 @@
 class IncomesController < ApplicationController
+  before_action :check_login
   before_action :set_income, only: %i[ show update destroy ]
 
   # GET /incomes
@@ -15,6 +16,8 @@ class IncomesController < ApplicationController
 
   # POST /incomes
   def create
+    puts request.body
+
     if !session[:user_id]
       render json: {error: "Please login before adding income"}, status: :unauthorized
     else
@@ -38,11 +41,24 @@ class IncomesController < ApplicationController
 
   # DELETE /incomes/1
   def destroy
-    @income.destroy
+    if session[:user_id]
+      @income.destroy
+      render json: {success: "Income deleted"}, status: :ok
+    else
+      render json: {error: "Permission denied"}, status: :unauthorized
+    end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
+    def check_login
+      if !session[:user_id]
+        render json: {error: "Unauthorized. Please log in."}, status: :unauthorized
+      else
+        true
+      end
+    end
+
     def set_income
       @income = Income.find(params[:id])
     end
