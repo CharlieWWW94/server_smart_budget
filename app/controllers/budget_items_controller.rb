@@ -28,8 +28,8 @@ class BudgetItemsController < ApplicationController
 
   # PATCH/PUT /budget_items/1
   def update
-    current_user = User.includes(:budgets).find(session[:user_id])
-    
+    current_user = User.includes(budgets: :budget_items).find(session[:user_id])
+
     if current_user.budgets.any?{|budget| budget.id == @budget_item.budget_id}
       @budget_item.update(budget_item_params)
       render json: @budget_item, status: :ok
@@ -41,7 +41,7 @@ class BudgetItemsController < ApplicationController
   # DELETE /budget_items/1
   def destroy
     current_user = User.includes(:budgets).find(session[:user_id])
-
+    
     if current_user.budgets.any?{|budget| budget.id == @budget_item.budget_id}
       @budget_item.destroy
       render json: {success: "budget_item destroyed"}, status: :ok
