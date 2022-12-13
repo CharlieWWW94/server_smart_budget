@@ -17,7 +17,7 @@ class BudgetsController < ApplicationController
   def create
       @budget = Budget.new(budget_params.merge({user_id: session[:user_id]}))
         if @budget.save
-          render json: {budget: @budget, budget_items: @budget.budget_items, var_budget_items: @budget.var_budget_items}, status: :created, location: @budget
+          render json: {budget: @budget, budget_items: @budget.budget_items}, status: :created, location: @budget
         else
           render json: @budget.errors, status: :unprocessable_entity
         end
@@ -51,6 +51,6 @@ class BudgetsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def budget_params
-      params.require(:budget).permit(:title, :user_id, budget_items_attributes: [:name, :value], var_budget_items_attributes: [:name, :max, :min])
+      params.require(:budget).permit(:title, :user_id, budget_items_attributes: [:name, :value, :item_type])
     end
 end

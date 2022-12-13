@@ -17,9 +17,10 @@ class BudgetItemsController < ApplicationController
   # POST /budget_items
   def create
     @budget_item = BudgetItem.new(budget_item_params)
+    puts @budget
 
     if @budget_item.save
-      render json: @budget_item, status: :created, location: @budget_item
+      render json: @budget_item, status: :created
     else
       render json: @budget_item.errors, status: :unprocessable_entity
     end
@@ -27,10 +28,11 @@ class BudgetItemsController < ApplicationController
 
   # PATCH/PUT /budget_items/1
   def update
-    current_user = User.find(session[:user_id])
+    current_user = User.includes(:budgets).find(session[:user_id])
+    
     if current_user.budgets.any?{|budget| budget.id == @budget_item.budget_id}
       @budget_item.update(budget_item_params)
-      render json: @budget_item
+      render json: @budget_item, status: :ok
     else
       render json: @budget_item.errors, status: :unprocessable_entity
     end
@@ -49,6 +51,6 @@ class BudgetItemsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def budget_item_params
-      params.require(:budget_item).permit(:name, :value, :item_type)
+      params.permit(:name, :value, :item_type, :budget_id)
     end
 end
