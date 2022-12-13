@@ -16,11 +16,6 @@ class IncomesController < ApplicationController
 
   # POST /incomes
   def create
-    puts request.body
-
-    if !session[:user_id]
-      render json: {error: "Please login before adding income"}, status: :unauthorized
-    else
       new_income = Income.new(income_params.merge({user_id: session[:user_id]}))
       @income = calculate_income(new_income)
       if @income.save
@@ -28,7 +23,6 @@ class IncomesController < ApplicationController
       else
         render json: @income.errors, status: :unprocessable_entity
       end
-    end
   end
 
   # PATCH/PUT /incomes/1
@@ -51,14 +45,6 @@ class IncomesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def check_login
-      if !session[:user_id]
-        render json: {error: "Unauthorized. Please log in."}, status: :unauthorized
-      else
-        true
-      end
-    end
 
     def set_income
       @income = Income.find(params[:id].to_i)

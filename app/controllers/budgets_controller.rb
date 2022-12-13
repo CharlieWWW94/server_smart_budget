@@ -44,13 +44,6 @@ class BudgetsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def check_login
-      if !session[:user_id]
-        render json: {error: "Unauthorized. Please log in."}, status: :unauthorized
-      else
-        true
-      end
-    end
 
     def set_budget
       @budget = Budget.find(params[:id])
