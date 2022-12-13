@@ -17,7 +17,6 @@ class UsersController < ApplicationController
   #POST /users/login
   def login
     set_user_for_login
-    
     if @user.pw_hash == params[:pw_hash]
       session[:user_id] = @user.id
       render json: @user, status: :ok
