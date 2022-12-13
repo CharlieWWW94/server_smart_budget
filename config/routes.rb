@@ -6,7 +6,6 @@ Rails.application.routes.draw do
 
   resources :incomes, only: [:create, :update, :destroy]
   resources :budgets, only: [:show, :create, :update, :destroy] do
-    resources :var_budget_items, only: [:create, :update, :destroy]
     resources :budget_items, only: [:create, :update, :destroy]
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

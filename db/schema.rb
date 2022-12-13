@@ -10,32 +10,36 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_12_111124) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_13_142930) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "budget_items", force: :cascade do |t|
     t.string "name"
     t.float "value"
-    t.integer "budget_id", null: false
+    t.bigint "budget_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "item_type"
     t.index ["budget_id"], name: "index_budget_items_on_budget_id"
   end
 
   create_table "budgets", force: :cascade do |t|
     t.string "title"
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_budgets_on_user_id"
   end
 
   create_table "incomes", force: :cascade do |t|
+    t.string "income_type"
     t.float "annual"
     t.float "month"
     t.float "week"
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "income_type"
     t.index ["user_id"], name: "index_incomes_on_user_id"
   end
 
@@ -51,18 +55,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_12_111124) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "var_budget_items", force: :cascade do |t|
-    t.string "name"
-    t.float "min"
-    t.float "max"
-    t.integer "budget_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["budget_id"], name: "index_var_budget_items_on_budget_id"
-  end
-
   add_foreign_key "budget_items", "budgets"
   add_foreign_key "budgets", "users"
   add_foreign_key "incomes", "users"
-  add_foreign_key "var_budget_items", "budgets"
 end
