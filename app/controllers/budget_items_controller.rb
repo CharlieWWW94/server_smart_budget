@@ -40,7 +40,14 @@ class BudgetItemsController < ApplicationController
 
   # DELETE /budget_items/1
   def destroy
-    @budget_item.destroy
+    current_user = User.includes(:budgets).find(session[:user_id])
+
+    if current_user.budgets.any?{|budget| budget.id == @budget_item.budget_id}
+      @budget_item.destroy
+      render json: {success: "budget_item destroyed"}, status: :ok
+    else
+      render json: {error: "That resource does not belong to you."}, status: :unauthorized
+    end
   end
 
   private
