@@ -5,7 +5,6 @@ class BudgetsController < ApplicationController
   # GET /budgets
   def index
     @budgets = Budget.all
-
     render json: @budgets
   end
 
@@ -35,7 +34,7 @@ class BudgetsController < ApplicationController
 
   # DELETE /budgets/1
   def destroy
-    if @budget.id == session[:user_id]
+    if @budget.user_id == session[:user_id]
       @budget.destroy
       render json: {success: "Budget deleted."}, status: :ok
     else

@@ -51,11 +51,11 @@ class UsersController < ApplicationController
   def destroy
     set_user
 
-    if @user
+    if @user == session[:user_id]
       @user.destroy
       render json: {success: "User account deleted"}, status: :ok
     else
-      render json: {error: "User not logged in"}, status: :unauthorized
+      render json: {error: "That action is not permitted."}, status: :unauthorized
     end
     
   end
