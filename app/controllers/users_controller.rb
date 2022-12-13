@@ -18,8 +18,10 @@ class UsersController < ApplicationController
   def login
     set_user_for_login
     if @user.pw_hash == params[:pw_hash]
+      # Creates user session
       session[:user_id] = @user.id
-      render json: @user, status: :ok
+      user_budget = Budget.includes(:budget_items).find_by(user_id: @user.id);
+      render json: {user: @user, budget: user_budget, budget_items: user_budget.budget_items}, status: :ok
     else
       render json: {error: "Login information incorrect."}, status: :unauthorized
     end
