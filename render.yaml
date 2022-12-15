@@ -16,7 +16,6 @@ services:
         fromDatabase:
           name: postgres
           property: connectionString
-      - key: TOKEN_SECRET
   - type: redis
     name: redis
     ipAllowList: []
