@@ -19,6 +19,9 @@ class BudgetsController < ApplicationController
   def create
       @budget = Budget.new(budget_params.merge({user_id: @user[:id]}))
         if @budget.save
+          budget_items = BudgetItem.all
+          puts budget_items
+          #YOUR CALCULATION FUNCTION GOES HERE. TAKE: budget_items, @budget.budget_items
           render json: {budget: @budget, budget_items: @budget.budget_items}, status: :created, location: @budget
         else
           render json: @budget.errors, status: :unprocessable_entity

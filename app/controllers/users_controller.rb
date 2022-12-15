@@ -23,6 +23,7 @@ class UsersController < ApplicationController
     if check_hash(@user[:pw_hash], user_params[:pw_hash])
       user_token = encode_token({id: @user.id, username: @user.username})
       user_budget = Budget.includes(:budget_items).find_by(user_id: @user.id);
+
       if user_budget
         render json: {token: user_token, user: @user, budget: user_budget, budget_items: user_budget.budget_items}, status: :ok
       else
@@ -37,8 +38,6 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     @user.pw_hash = create_hash(@user.pw_hash)
-    puts "HERE IS YOUR HASH"
-    puts @user.pw_hash
     if @user.save
       user_token = encode_token({id: @user.id, username: @user.username})
       render json: {token: user_token, user: @user}, status: :created, location: @user
