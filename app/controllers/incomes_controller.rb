@@ -18,6 +18,7 @@ class IncomesController < ApplicationController
   def create
       new_income = Income.new(income_params.merge({user_id: @user[:id]}))
       @income = calculate_income(new_income)
+      #ADD TAX CALCULATIONS HERE
       if @income.save
         render json: @income, status: :created, location: @income
       else
