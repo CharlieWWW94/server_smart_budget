@@ -11,9 +11,10 @@ class ApplicationController < ActionController::API
     end
 
     def authorize_user
-        given_token = request.headers[:Authorization].split(" ")[1]
+        header = request.headers[:Authorization]
 
-        if given_token
+        if header
+          given_token = header.split(" ")[1]
           user_info = decode_token(given_token)[0]
           @user = User.find(user_info["id"])
         else
