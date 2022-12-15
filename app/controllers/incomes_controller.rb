@@ -1,5 +1,4 @@
 class IncomesController < ApplicationController
-  before_action :check_login
   before_action :set_income, only: %i[ show update destroy ]
 
   # GET /incomes
@@ -16,7 +15,7 @@ class IncomesController < ApplicationController
 
   # POST /incomes
   def create
-      new_income = Income.new(income_params.merge({user_id: session[:user_id]}))
+      new_income = Income.new(income_params.merge({user_id: params[:user_id]}))
       @income = calculate_income(new_income)
       if @income.save
         render json: @income, status: :created, location: @income

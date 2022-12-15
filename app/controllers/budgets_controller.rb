@@ -1,5 +1,4 @@
 class BudgetsController < ApplicationController
-  # before_action :check_login
   before_action :set_budget, only: %i[ show update destroy ]
 
   # GET /budgets

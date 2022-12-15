@@ -18,8 +18,7 @@ class UsersController < ApplicationController
   def login
     set_user_for_login
     if @user.pw_hash == params[:pw_hash]
-      # Creates user session
-      session[:user_id] = @user.id
+      
       user_budget = Budget.includes(:budget_items).find_by(user_id: @user.id);
       render json: {user: @user, budget: user_budget, budget_items: user_budget.budget_items, cookie: session}, status: :ok
     else
@@ -51,25 +50,24 @@ class UsersController < ApplicationController
   # DELETE /users/1
   def destroy
     set_user
-
-    if @user == session[:user_id]
-      @user.destroy
+      if @user.destroy
       render json: {success: "User account deleted"}, status: :ok
-    else
+      else
       render json: {error: "That action is not permitted."}, status: :unauthorized
-    end
+      end
     
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
+    def set_user
+      @user = User.find(user_params[:id])
+    end
     def set_user_for_login
       @user = User.find_by(username: params[:username])
     end
 
-    def set_user
-      @user = User.find(session[:user_id])
-    end
+    
 
     # Only allow a list of trusted parameters through.
     def user_params
