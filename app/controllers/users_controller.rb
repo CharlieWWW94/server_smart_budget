@@ -1,5 +1,8 @@
+require_relative "../../authentication/lib/authenticator.rb"
+
 class UsersController < ApplicationController
   before_action :authorize_user, only: %i[ show update destroy ]
+  include AuthenticationMod
 
   # GET /users
   # NEVER needed.
@@ -17,11 +20,14 @@ class UsersController < ApplicationController
   #POST /users/login
   def login
     set_user_for_login
-    if @user.pw_hash == params[:pw_hash]
+    if check_hash(@user[:pw_hash], user_params[:pw_hash])
       user_token = encode_token({id: @user.id, username: @user.username})
       user_budget = Budget.includes(:budget_items).find_by(user_id: @user.id);
-      puts "LOGIN SUCCESSFUL"
-      render json: {token: user_token, user: @user, budget: user_budget, budget_items: user_budget.budget_items}, status: :ok
+      if user_budget
+        render json: {token: user_token, user: @user, budget: user_budget, budget_items: user_budget.budget_items}, status: :ok
+      else
+        render json: {token: user_token, user: @user}, status: :ok
+      end
     else
       render json: {error: "Login information incorrect."}, status: :unauthorized
     end
@@ -30,7 +36,9 @@ class UsersController < ApplicationController
   # POST /users
   def create
     @user = User.new(user_params)
-
+    @user.pw_hash = create_hash(@user.pw_hash)
+    puts "HERE IS YOUR HASH"
+    puts @user.pw_hash
     if @user.save
       user_token = encode_token({id: @user.id, username: @user.username})
       render json: {token: user_token, user: @user}, status: :created, location: @user
@@ -63,8 +71,6 @@ class UsersController < ApplicationController
     def set_user_for_login
       @user = User.find_by(username: params[:username])
     end
-
-    
 
     # Only allow a list of trusted parameters through.
     def user_params
