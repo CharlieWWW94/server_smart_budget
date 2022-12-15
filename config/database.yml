@@ -81,6 +81,8 @@ test:
 #
 production:
   <<: *default
+  # copied url here
+  url: <%= ENV["DATABASE_URL"] %>
   database: smart_budget_production
   username: smart_budget
   password: <%= ENV["SMART_BUDGET_DATABASE_PASSWORD"] %>
