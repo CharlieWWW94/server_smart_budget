@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[ show update destroy ]
+  before_action :authorize_user, only: %i[ show update destroy ]
 
   # GET /users
   # NEVER needed.
@@ -18,10 +18,10 @@ class UsersController < ApplicationController
   def login
     set_user_for_login
     if @user.pw_hash == params[:pw_hash]
-      # Creates user session
-      session[:user_id] = @user.id
+      user_token = encode_token({id: @user.id, username: @user.username})
       user_budget = Budget.includes(:budget_items).find_by(user_id: @user.id);
-      render json: {user: @user, budget: user_budget, budget_items: user_budget.budget_items, cookie: session}, status: :ok
+      puts "LOGIN SUCCESSFUL"
+      render json: {token: user_token, user: @user, budget: user_budget, budget_items: user_budget.budget_items}, status: :ok
     else
       render json: {error: "Login information incorrect."}, status: :unauthorized
     end
@@ -32,8 +32,8 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      session[:user_id] = @user.id
-      render json: @user, status: :created, location: @user
+      user_token = encode_token({id: @user.id, username: @user.username})
+      render json: {token: user_token, user: @user}, status: :created, location: @user
     else
       render json: @user.errors, status: :unprocessable_entity
     end
@@ -50,14 +50,11 @@ class UsersController < ApplicationController
 
   # DELETE /users/1
   def destroy
-    set_user
-
-    if @user == session[:user_id]
-      @user.destroy
+      if @user.destroy
       render json: {success: "User account deleted"}, status: :ok
-    else
+      else
       render json: {error: "That action is not permitted."}, status: :unauthorized
-    end
+      end
     
   end
 
@@ -67,9 +64,7 @@ class UsersController < ApplicationController
       @user = User.find_by(username: params[:username])
     end
 
-    def set_user
-      @user = User.find(session[:user_id])
-    end
+    
 
     # Only allow a list of trusted parameters through.
     def user_params

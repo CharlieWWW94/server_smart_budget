@@ -1,10 +1,24 @@
 class ApplicationController < ActionController::API
-    def check_login
-      p session[:user_id]
-        if !session[:user_id]
-          render json: {error: "Unauthorized. Please log in."}, status: :unauthorized
+
+    def encode_token payload
+      token = JWT.encode payload, "pLeAsE_w0rk", "HS256"
+      return token
+    end
+
+    def decode_token given_token
+      decoded_token = JWT.decode given_token, "pLeAsE_w0rk", true, {algorithm: "HS256"}
+      return decoded_token
+    end
+
+    def authorize_user
+        header = request.headers[:Authorization]
+
+        if header
+          given_token = header.split(" ")[1]
+          user_info = decode_token(given_token)[0]
+          @user = User.find(user_info["id"])
         else
-          true
+          render json: {error: "Please log in"}, status: :unauthorized
         end
     end
 end
