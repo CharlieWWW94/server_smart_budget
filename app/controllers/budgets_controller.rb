@@ -1,4 +1,5 @@
 class BudgetsController < ApplicationController
+  before_action :authorize_user
   before_action :set_budget, only: %i[ show update destroy ]
 
   # GET /budgets
@@ -16,7 +17,7 @@ class BudgetsController < ApplicationController
 
   # POST /budgets
   def create
-      @budget = Budget.new(budget_params.merge({user_id: session[:user_id]}))
+      @budget = Budget.new(budget_params.merge({user_id: @user[:id]}))
         if @budget.save
           render json: {budget: @budget, budget_items: @budget.budget_items}, status: :created, location: @budget
         else
