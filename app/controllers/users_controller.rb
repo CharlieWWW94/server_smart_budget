@@ -21,7 +21,7 @@ class UsersController < ApplicationController
       # Creates user session
       session[:user_id] = @user.id
       user_budget = Budget.includes(:budget_items).find_by(user_id: @user.id);
-      render json: {user: @user, budget: user_budget, budget_items: user_budget.budget_items}, status: :ok
+      render json: {user: @user, budget: user_budget, budget_items: user_budget.budget_items, cookie: session}, status: :ok
     else
       render json: {error: "Login information incorrect."}, status: :unauthorized
     end

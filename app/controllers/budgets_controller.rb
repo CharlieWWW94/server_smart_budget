@@ -1,5 +1,5 @@
 class BudgetsController < ApplicationController
-  before_action :check_login
+  # before_action :check_login
   before_action :set_budget, only: %i[ show update destroy ]
 
   # GET /budgets
@@ -10,6 +10,8 @@ class BudgetsController < ApplicationController
 
   # GET /budgets/1
   def show
+    # Below commented line suggests JWT will work more easily
+    # puts request.headers[:Authorization]
     render json: @budget
   end
 

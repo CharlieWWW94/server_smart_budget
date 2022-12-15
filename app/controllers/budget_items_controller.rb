@@ -17,7 +17,6 @@ class BudgetItemsController < ApplicationController
   # POST /budget_items
   def create
     @budget_item = BudgetItem.new(budget_item_params)
-    puts @budget
 
     if @budget_item.save
       render json: @budget_item, status: :created
@@ -27,8 +26,9 @@ class BudgetItemsController < ApplicationController
   end
 
   # PATCH/PUT /budget_items/1
-  def update
-    current_user = User.includes(budgets: :budget_items).find(session[:user_id])
+  def update #cancan
+    #Change add column to budget_item - this will aid faster lookups
+    current_user = User.includes(:budgets).find(session[:user_id])
 
     if current_user.budgets.any?{|budget| budget.id == @budget_item.budget_id}
       @budget_item.update(budget_item_params)
