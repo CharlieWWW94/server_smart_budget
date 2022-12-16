@@ -20,7 +20,7 @@ class UsersController < ApplicationController
   #POST /users/login
   def login
     set_user_for_login
-    if check_hash(@user[:pw_hash], user_params[:pw_hash])
+    if @user && check_hash(@user[:pw_hash], user_params[:pw_hash])
       user_token = encode_token({id: @user.id, username: @user.username})
       user_budget = Budget.includes(:budget_items).find_by(user_id: @user.id);
 
