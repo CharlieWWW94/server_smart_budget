@@ -12,7 +12,7 @@ class BudgetsController < ApplicationController
   def show
     # Below commented line suggests JWT will work more easily
     # puts request.headers[:Authorization]
-    render json: @budget
+    render json: {budget: @budget, budget_items_attributes: @budget.budget_items}
   end
 
   # POST /budgets
@@ -31,7 +31,7 @@ class BudgetsController < ApplicationController
   # PATCH/PUT /budgets/1
   def update
     if @budget.update(budget_params)
-      render json: @budget
+      render json: {budget: @budget, budget_items_attributes: @budget.budget_items}
     else
       render json: @budget.errors, status: :unprocessable_entity
     end
