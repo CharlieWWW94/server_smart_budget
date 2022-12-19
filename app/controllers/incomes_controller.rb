@@ -16,13 +16,27 @@ class IncomesController < ApplicationController
 
   # POST /incomes
   def create
-      new_income = Income.new(income_params.merge({user_id: @user[:id]}))
-      @income = calculate_income(new_income)
+    income_list = params[:new_incomes]
+    puts "HELLO"
+    puts income_list
+    created_incomes = []
+
+    income_list.each do |income|
+      begin
+        new_income = {income_type: income["income_type"], month: income["month"]}
+        new_income_entry = Income.new(new_income.merge({user_id: @user[:id]}))
+        new_income_entry_complete = calculate_income(new_income_entry)
+        new_income_entry_complete.save
+        created_incomes.push(new_income_entry_complete)
+        puts created_incomes
+      rescue
+        render json: new_income_entry.errors, status: :unprocessable_entity
+        break
+      end
+    end
       #ADD TAX CALCULATIONS HERE
-      if @income.save
-        render json: @income, status: :created, location: @income
-      else
-        render json: @income.errors, status: :unprocessable_entity
+      if income_list.length == created_incomes.length
+        render json: {incomes: created_incomes}, status: :created, location: @income
       end
   end
 
