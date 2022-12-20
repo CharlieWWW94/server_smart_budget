@@ -37,7 +37,6 @@ class BudgetsController < ApplicationController
 
       if new_budget.save
         if @budget then @budget.destroy end
-          puts "we did it!"
         render json: {budget: new_budget, budget_items: new_budget.budget_items}, status: :created
       else
         render json: {error: "Unable to save new budget"}, status: :unprocessable_entity
@@ -46,7 +45,7 @@ class BudgetsController < ApplicationController
 
   # DELETE /budgets/1
   def destroy
-    if @budget.user_id == session[:user_id]
+    if @budget
       @budget.destroy
       render json: {success: "Budget deleted."}, status: :ok
     else

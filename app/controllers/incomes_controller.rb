@@ -17,8 +17,6 @@ class IncomesController < ApplicationController
   # POST /incomes
   def create
     income_list = params[:new_incomes]
-    puts "HELLO"
-    puts income_list
     created_incomes = []
 
     income_list.each do |income|
@@ -41,11 +39,35 @@ class IncomesController < ApplicationController
   end
 
   # PATCH/PUT /incomes/1
-  def update
-    if @income.update(income_params)
-      render json: @income
-    else
-      render json: @income.errors, status: :unprocessable_entity
+  # def update
+  #   if @income.update(income_params)
+  #     render json: @income
+  #   else
+  #     render json: @income.errors, status: :unprocessable_entity
+  #   end
+  # end
+
+  def edit_incomes
+    existing_incomes = Income.where(user_id: @user.id)
+    income_list = params[:new_incomes]
+    created_incomes = []
+
+    # Put into individual function
+    income_list.each do |income|
+      begin
+        new_income = {income_type: income["income_type"], month: income["month"]}
+        new_income_entry_complete = calculate_income(Income.new(new_income.merge({user_id: @user[:id]})))
+        new_income_entry_complete.save
+        created_incomes.push(new_income_entry_complete)
+      rescue
+        render json: new_income_entry.errors, status: :unprocessable_entity
+        break
+      end
+    end
+    
+    if income_list.length == created_incomes.length
+      existing_incomes.each {|income| income.destroy} 
+      render json: {incomes: created_incomes}, status: :created, location: @income
     end
   end
 
