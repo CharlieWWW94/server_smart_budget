@@ -13,4 +13,10 @@ RSpec.describe User, type: :model do
   missing_pw = User.new({username: "missing_pw"})
   expect(missing_pw).to_not be_valid
   end
+
+  it "can access child (income)" do
+  end
+
+  it "can access child (budget)" do
+  end
 end

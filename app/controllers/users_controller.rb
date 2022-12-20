@@ -1,8 +1,10 @@
 require_relative "../../authentication/lib/authenticator.rb"
 
+
 class UsersController < ApplicationController
   before_action :authorize_user, only: %i[ show update destroy ]
   include AuthenticationMod
+
 
   # GET /users
   # NEVER needed.
@@ -20,6 +22,7 @@ class UsersController < ApplicationController
   #POST /users/login
   def login
     set_user_for_login
+
     if @user && check_hash(@user[:pw_hash], user_params[:pw_hash])
       user_token = encode_token({id: @user.id, username: @user.username})
       user_budget = Budget.includes(:budget_items).find_by(user_id: @user.id);
@@ -36,13 +39,17 @@ class UsersController < ApplicationController
 
   # POST /users
   def create
-    @user = User.new(user_params)
-    @user.pw_hash = create_hash(@user.pw_hash)
-    if @user.save
-      user_token = encode_token({id: @user.id, username: @user.username})
-      render json: {token: user_token, user: @user}, status: :created, location: @user
+    if user_params[:email] != email_check(user_params[:email])
+      render json: {error: "Please provide a valid email"}, status: :bad_request
     else
-      render json: @user.errors, status: :unprocessable_entity
+      @user = User.new(user_params)
+      @user.pw_hash = create_hash(@user.pw_hash)
+        if @user.save
+          user_token = encode_token({id: @user.id, username: @user.username})
+          render json: {token: user_token, user: @user}, status: :created, location: @user
+        else
+          render json: @user.errors, status: :unprocessable_entity
+        end
     end
   end
 
@@ -74,5 +81,15 @@ class UsersController < ApplicationController
     # Only allow a list of trusted parameters through.
     def user_params
       params.permit(:id, :username, :email, :mobile, :pw_hash, :city, :county, :country)
+    end
+
+    def email_check input
+      if input.length == 0
+          return "Please provide a valid email"
+      elsif input.exclude? "@"
+          return "Please provide a valid email"
+      else 
+          return input
+      end
     end
 end

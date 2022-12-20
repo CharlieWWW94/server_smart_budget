@@ -10,8 +10,6 @@ class BudgetsController < ApplicationController
 
   # GET /budgets/1
   def show
-    # Below commented line suggests JWT will work more easily
-    # puts request.headers[:Authorization]
     render json: {budget: @budget, budget_items_attributes: @budget.budget_items}
   end
 
