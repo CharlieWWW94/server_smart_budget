@@ -28,7 +28,7 @@ class UsersController < ApplicationController
       user_budget = Budget.includes(:budget_items).find_by(user_id: @user.id);
 
       if user_budget
-        render json: {token: user_token, user: @user, budget: user_budget, budget_items: user_budget.budget_items}, status: :ok
+        render json: {token: user_token, user: @user, budget: user_budget, budget_items: user_budget.budget_items, incomes: @user.incomes}, status: :ok
       else
         render json: {token: user_token, user: @user}, status: :ok
       end
