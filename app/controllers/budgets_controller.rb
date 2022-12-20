@@ -28,11 +28,20 @@ class BudgetsController < ApplicationController
 
   # PATCH/PUT /budgets/1
   def update
-    if @budget.update(budget_params)
-      render json: {budget: @budget, budget_items_attributes: @budget.budget_items}
-    else
-      render json: @budget.errors, status: :unprocessable_entity
-    end
+    # if @budget.update(budget_params)
+    #   render json: {budget: @budget, budget_items_attributes: @budget.budget_items}
+    # else
+    #   render json: @budget.errors, status: :unprocessable_entity
+    # end
+      new_budget = Budget.new(budget_params.merge({user_id: @user[:id]}))
+
+      if new_budget.save
+        if @budget then @budget.destroy end
+          puts "we did it!"
+        render json: {budget: new_budget, budget_items: new_budget.budget_items}, status: :created
+      else
+        render json: {error: "Unable to save new budget"}, status: :unprocessable_entity
+      end
   end
 
   # DELETE /budgets/1
