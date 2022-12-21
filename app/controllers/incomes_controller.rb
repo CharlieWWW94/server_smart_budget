@@ -24,7 +24,7 @@ class IncomesController < ApplicationController
 
     income_list.each do |income|
       begin
-        new_income = {income_type: income["income_type"], month: income["month"]}
+        new_income = {income_type: income["income_type"], month: income["month"], annual: income["annual"]}
         new_income_entry = Income.new(new_income.merge({user_id: @user[:id]}))
         new_income_entry_complete = calculate_income(new_income_entry)
         new_income_entry_complete.save
