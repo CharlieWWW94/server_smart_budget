@@ -5,13 +5,15 @@ module Spending_insights
     
     budget_items.each do |item| 
     
-        if item[:name] == "Rent" && item[:value] > 1832
-         rent_inst = "
-        You are on the higher end of rent costs.The average rent price is around £1832 according to homelet."
-        else
-         rent_inst = "
-         You are paying less than the average rent price in London!"
+        if item[:name] == "Rent" 
+            if item[:value] > 1832
+                rent_inst = "
+                You are on the higher end of rent costs.The average rent price is around £1832 according to homelet."
+            else
+                rent_inst = "
+                You are paying less than the average rent price in London!"
         
+            end
         end
         finalInsights.push(rent_inst)
     
