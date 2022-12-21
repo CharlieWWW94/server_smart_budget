@@ -18,24 +18,13 @@ module Spending_insights
         end
         finalInsights.push(rent_inst)
     
-        if item[:name] == "Savings" && item[:value] > 300
-         savings_inst =  "Average monthly savings are around £300, different factors influence this figure. 
-         You are on the right track! "
-        else
-         savings_inst = "
-         Tips for saving better:
-    
-         1. Set a Budget: Establishing a budget is a great way to ensure that you are saving money each month. Decide on a realistic budget that you are able to stick to and make sure to save a portion of your income each month.
-         
-         2. Automate Your Savings: If you find it hard to save money each month, automate your savings to ensure that you are always saving a set amount. You can set up automatic transfers from your checking account to your savings account each month.
-         
-         3. Make Saving a Priority: Make saving a priority each month. Try to pay yourself first and set aside money for savings before you pay for anything else.
-         
-         4. Reduce Your Spending: Reducing your spending is a great way to save more money each month. Look for ways to save money on everyday expenses, such as cutting back on eating out and reducing your energy costs.
-         
-         5. Take Advantage of Rewards: If you use a credit card, take advantage of any rewards or cash back offers. You can also use credit card reward points to save money on travel, purchases, or other expenses.
-         
-         6. Invest in Your Future: Investing your money for the future is a great way to save for retirement and other long"
+        if item[:name] == "Savings"
+            if item[:value] > 300
+                savings_inst =  "Average monthly savings are around £300, different factors influence this figure. 
+                                You are on the right track! "
+            else
+                savings_inst = "Set a Budget: Establishing a budget is a great way to ensure that you are saving money each month. Decide on a realistic budget that you are able to stick to and make sure to save a portion of your income each month."
+            end
         end  
         finalInsights.push(savings_inst)
     
@@ -68,8 +57,10 @@ module Spending_insights
         end
         finalInsights.push(groceries_inst)
     
-        #finalInsights.push(rent_inst,savings_inst,phone_inst,groceries_inst)
-        randomFacts =[
+   
+    end 
+         #finalInsights.push(rent_inst,savings_inst,phone_inst,groceries_inst)
+         randomFacts =[
             "The average rent for a one-bedroom apartment in the UK is over £1,800 per month.",
              "Grocery costs make up between 10-20% of the average family's budget.",
              "The average monthly electricity bill in the UK is around £210.",  
@@ -80,7 +71,7 @@ module Spending_insights
              "The average cost for a cell phone plan is around £42 per month.",   
              "The average cost of car insurance is around £1,500 per year."]
         finalInsights.push(randomFacts.sample)
-    end 
+
     return finalInsights
     end
     
