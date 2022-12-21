@@ -1,4 +1,8 @@
+require_relative "../../lib/insights.rb"
+
 class BudgetsController < ApplicationController
+  include Spending_insights
+
   before_action :authorize_user
   before_action :set_budget, only: %i[ show update destroy ]
 
@@ -18,7 +22,8 @@ class BudgetsController < ApplicationController
       @budget = Budget.new(budget_params.merge({user_id: @user[:id]}))
         if @budget.save
           budget_items = BudgetItem.all
-          puts budget_items
+          insights = generateInsights(@budget.budget_items)
+          puts insights
           #YOUR CALCULATION FUNCTION GOES HERE. TAKE: budget_items, @budget.budget_items
           render json: {budget: @budget, budget_items: @budget.budget_items}, status: :created, location: @budget
         else
