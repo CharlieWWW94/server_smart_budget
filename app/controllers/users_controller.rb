@@ -35,7 +35,7 @@ class UsersController < ApplicationController
           budget_items: user_budget.budget_items, 
           incomes: @user.incomes}, status: :ok
       else
-        render json: {token: user_token, user: @user}, status: :ok
+        render json: {token: user_token, user: @user, incomes: Income.where(user_id: @user.id)}, status: :ok
       end
     else
       render json: {error: "Login information incorrect."}, status: :unauthorized
@@ -53,7 +53,7 @@ class UsersController < ApplicationController
           user_token = encode_token({id: @user.id, username: @user.username})
           render json: {token: user_token, user: @user}, status: :created, location: @user
         else
-          render json: @user.errors, status: :unprocessable_entity
+          render json: {error: "Username already taken."}, status: :bad_request
         end
     end
   end
@@ -88,6 +88,7 @@ class UsersController < ApplicationController
       params.permit(:id, :username, :email, :mobile, :pw_hash, :city, :county, :country)
     end
 
+    # Moses' email_check function
     def email_check input
       if input.length == 0
           return "Please provide a valid email"

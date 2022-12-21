@@ -16,6 +16,9 @@ class IncomesController < ApplicationController
 
   # POST /incomes
   def create
+    Income.where(user_id: @user.id).each do |income|
+      income.destroy
+    end
     income_list = params[:new_incomes]
     created_incomes = []
 
@@ -26,7 +29,7 @@ class IncomesController < ApplicationController
         new_income_entry_complete = calculate_income(new_income_entry)
         new_income_entry_complete.save
         created_incomes.push(new_income_entry_complete)
-        puts created_incomes
+        
       rescue
         render json: new_income_entry.errors, status: :unprocessable_entity
         break
@@ -47,29 +50,37 @@ class IncomesController < ApplicationController
   #   end
   # end
 
-  def edit_incomes
-    existing_incomes = Income.where(user_id: @user.id)
-    income_list = params[:new_incomes]
-    created_incomes = []
+  # def edit_incomes
+  #   existing_incomes = Income.where(user_id: @user.id)
+  #   income_list = params[:new_incomes]
+  #   print "HERE ARE THE NEW ONES"
+  #   puts income_list
+  #   created_incomes = []
 
-    # Put into individual function
-    income_list.each do |income|
-      begin
-        new_income = {income_type: income["income_type"], month: income["month"]}
-        new_income_entry_complete = calculate_income(Income.new(new_income.merge({user_id: @user[:id]})))
-        new_income_entry_complete.save
-        created_incomes.push(new_income_entry_complete)
-      rescue
-        render json: new_income_entry.errors, status: :unprocessable_entity
-        break
-      end
-    end
+  #   # Put into individual function
+  #   income_list.each do |income|
+  #     begin
+  #       new_income = {income_type: income["income_type"], month: income["month"]}
+  #       new_income_entry_complete = calculate_income(Income.new(new_income.merge({user_id: @user[:id]})))
+  #       new_income_entry_complete.save
+  #       created_incomes.push(new_income_entry_complete)
+  #     rescue
+  #       render json: new_income_entry.errors, status: :unprocessable_entity
+  #       break
+  #     end
+  #   end
+
+  #   print "HERE ARE THE SAVED ONES"
+  #   puts created_incomes
     
-    if income_list.length == created_incomes.length
-      existing_incomes.each {|income| income.destroy} 
-      render json: {incomes: created_incomes}, status: :created, location: @income
-    end
-  end
+  #   if income_list.length == created_incomes.length
+  #     print "REACHING THE RIGHT BIT OF CODE"
+  #     existing_incomes.each {|income| income.destroy} 
+  #     print "HERE ARE THE NEW ONES, STILL IN TACT"
+  #     puts created_incomes
+  #     render json: {incomes: created_incomes}, status: :created, location: @income
+  #   end
+  # end
 
   # DELETE /incomes/1
   def destroy
