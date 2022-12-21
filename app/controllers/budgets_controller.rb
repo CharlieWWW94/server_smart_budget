@@ -23,9 +23,8 @@ class BudgetsController < ApplicationController
         if @budget.save
           budget_items = BudgetItem.all
           insights = generateInsights(@budget.budget_items)
-          puts insights
           #YOUR CALCULATION FUNCTION GOES HERE. TAKE: budget_items, @budget.budget_items
-          render json: {budget: @budget, budget_items: @budget.budget_items}, status: :created, location: @budget
+          render json: {budget: @budget, budget_items: @budget.budget_items, insights: insights}, status: :created, location: @budget
         else
           render json: @budget.errors, status: :unprocessable_entity
         end
