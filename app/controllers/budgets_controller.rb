@@ -2,28 +2,15 @@ require_relative "../../lib/insights.rb"
 
 class BudgetsController < ApplicationController
   include Spending_insights
-
   before_action :authorize_user
   before_action :set_budget, only: %i[ show update destroy ]
 
-  # GET /budgets
-  def index
-    @budgets = Budget.all
-    render json: @budgets
-  end
-
-  # GET /budgets/1
-  def show
-    render json: {budget: @budget, budget_items_attributes: @budget.budget_items}
-  end
-
   # POST /budgets
   def create
+    # Line 11 allows nested attributes - all children of budget are automatically created
       @budget = Budget.new(budget_params.merge({user_id: @user[:id]}))
         if @budget.save
-          budget_items = BudgetItem.all
           insights = generateInsights(@budget.budget_items)
-          #YOUR CALCULATION FUNCTION GOES HERE. TAKE: budget_items, @budget.budget_items
           render json: {budget: @budget, budget_items: @budget.budget_items, insights: insights}, status: :created, location: @budget
         else
           render json: @budget.errors, status: :unprocessable_entity
@@ -32,16 +19,11 @@ class BudgetsController < ApplicationController
 
   # PATCH/PUT /budgets/1
   def update
-    # if @budget.update(budget_params)
-    #   render json: {budget: @budget, budget_items_attributes: @budget.budget_items}
-    # else
-    #   render json: @budget.errors, status: :unprocessable_entity
-    # end
       new_budget = Budget.new(budget_params.merge({user_id: @user[:id]}))
-
       if new_budget.save
         if @budget then @budget.destroy end
-        render json: {budget: new_budget, budget_items: new_budget.budget_items}, status: :created
+        insights = generateInsights(new_budget.budget_items)
+        render json: {budget: new_budget, budget_items: new_budget.budget_items, insights: insights}, status: :created
       else
         render json: {error: "Unable to save new budget"}, status: :unprocessable_entity
       end
@@ -58,8 +40,6 @@ class BudgetsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-
     def set_budget
       @budget = Budget.find(params[:id])
     end

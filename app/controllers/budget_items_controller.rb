@@ -2,19 +2,8 @@ class BudgetItemsController < ApplicationController
   before_action :authorize_user
   before_action :set_budget_item, only: %i[ show update destroy ]
 
-  # GET /budget_items
-  # def index
-  #   @budget_items = BudgetItem.all
-
-  #   render json: @budget_items
-  # end
-
-  # GET /budget_items/1
-  # def show
-  #   render json: @budget_item
-  # end
-
   # POST /budget_items
+  # Creates a new budget item
   def create
     @budget_item = BudgetItem.new(budget_item_params)
 
@@ -26,8 +15,8 @@ class BudgetItemsController < ApplicationController
   end
 
   # PATCH/PUT /budget_items/1
-  def update #cancan
-    #Change add column to budget_item - this will aid faster lookups
+  # Updates individual budget_items in db
+  def update
     current_user = User.includes(:budgets).find(session[:user_id])
 
     if current_user.budgets.any?{|budget| budget.id == @budget_item.budget_id}
@@ -39,6 +28,7 @@ class BudgetItemsController < ApplicationController
   end
 
   # DELETE /budget_items/1
+  # Allows for deletion of individual budget items.
   def destroy
     current_user = User.includes(:budgets).find(session[:user_id])
     
