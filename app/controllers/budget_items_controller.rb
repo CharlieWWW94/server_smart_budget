@@ -3,6 +3,7 @@ class BudgetItemsController < ApplicationController
   before_action :set_budget_item, only: %i[ show update destroy ]
 
   # POST /budget_items
+  # Creates a new budget item
   def create
     @budget_item = BudgetItem.new(budget_item_params)
 
@@ -14,6 +15,7 @@ class BudgetItemsController < ApplicationController
   end
 
   # PATCH/PUT /budget_items/1
+  # Updates individual budget_items in db
   def update
     current_user = User.includes(:budgets).find(session[:user_id])
 
@@ -26,6 +28,7 @@ class BudgetItemsController < ApplicationController
   end
 
   # DELETE /budget_items/1
+  # Allows for deletion of individual budget items.
   def destroy
     current_user = User.includes(:budgets).find(session[:user_id])
     

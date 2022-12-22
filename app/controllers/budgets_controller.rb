@@ -2,12 +2,12 @@ require_relative "../../lib/insights.rb"
 
 class BudgetsController < ApplicationController
   include Spending_insights
-
   before_action :authorize_user
   before_action :set_budget, only: %i[ show update destroy ]
 
   # POST /budgets
   def create
+    # Line 11 allows nested attributes - all children of budget are automatically created
       @budget = Budget.new(budget_params.merge({user_id: @user[:id]}))
         if @budget.save
           insights = generateInsights(@budget.budget_items)
