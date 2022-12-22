@@ -22,7 +22,8 @@ class BudgetsController < ApplicationController
       new_budget = Budget.new(budget_params.merge({user_id: @user[:id]}))
       if new_budget.save
         if @budget then @budget.destroy end
-        render json: {budget: new_budget, budget_items: new_budget.budget_items}, status: :created
+        insights = generateInsights(new_budget.budget_items)
+        render json: {budget: new_budget, budget_items: new_budget.budget_items, insights: insights}, status: :created
       else
         render json: {error: "Unable to save new budget"}, status: :unprocessable_entity
       end

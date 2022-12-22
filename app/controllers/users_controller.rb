@@ -1,9 +1,11 @@
 require_relative "../../authentication/lib/authenticator.rb"
+require_relative "../../lib/insights.rb"
 
 
 class UsersController < ApplicationController
   before_action :authorize_user, only: %i[ show update destroy ]
   include AuthenticationMod
+  include Spending_insights
 
   #POST /users/login
   def login
@@ -14,14 +16,16 @@ class UsersController < ApplicationController
     else
       user_token = encode_token()
       user_budget = Budget.includes(:budget_items).find_by(user_id: @user.id);
-
+      insights = generateInsights(user_budget.budget_items)
       if user_budget
         render json: {
           token: user_token, 
           user: @user, 
           budget: user_budget, 
           budget_items: user_budget.budget_items, 
-          incomes: @user.incomes}, status: :ok
+          incomes: @user.incomes,
+          insights: insights
+          }, status: :ok
       else
         render json: {
           token: user_token, 
