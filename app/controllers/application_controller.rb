@@ -1,15 +1,17 @@
 class ApplicationController < ActionController::API
-
-    def encode_token payload
-      token = JWT.encode payload, "pLeAsE_w0rk", "HS256"
+    # Creates a token based on user_id, username and a secret key
+    def encode_token
+      token = JWT.encode({id: @user.id, username: @user.username} , "pLeAsE_w0rk", "HS256")
       return token
     end
 
+    # Decrypts token for user verification
     def decode_token given_token
       decoded_token = JWT.decode given_token, "pLeAsE_w0rk", true, {algorithm: "HS256"}
       return decoded_token
     end
 
+    # Breaks down authorization header to confirm user
     def authorize_user
         header = request.headers[:Authorization]
 
